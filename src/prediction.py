@@ -113,7 +113,7 @@ class Predictor:
 
     def _clean(self):
         self.df.dropna(subset=[self.target_attribute], inplace=True)
-        self.df.drop_duplicates(subset=['id'], inplace=True)
+        self.df.drop_duplicates(subset=['PropertyKey_ID'], inplace=True)
         logger.info(f'Dataset length: {len(self.df)}')
         logger.info(f'Dataset allocated memory: {int(self.df.memory_usage(index=True).sum() / 1024 / 1024)} MB')
 
@@ -121,7 +121,7 @@ class Predictor:
     def _pre_preprocess_analysis_hook(self):
         logger.info(f'Training dataset length: {len(self.df_train)}')
         logger.info(f'Test dataset length: {len(self.df_test)}')
-        logger.info(f'Test cities: {self.df_test["city"].unique()}')
+        logger.info(f'Test cities: {self.df_test["City_tx"].unique()}')
 
 
     def _abort_signal(self):
@@ -141,21 +141,45 @@ class Predictor:
 
     def _preprocess(self):
 
+        # for func in self.preprocessing_stages:
+        #     params = inspect.signature(func).parameters
+
+        #     if 'df_train' in params and 'df_test' in params:
+        #         self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
+        #     elif 'var' in params:
+        #         self.df_train = func(self.df_train)
+        #         self.df_test = func(self.df_test)
+        #     else:
+        #         self.df_train = func(self.df_train)
+        #         self.df_test = func(self.df_test)
+   
         for func in self.preprocessing_stages:
             params = inspect.signature(func).parameters
-
+            
             if 'df_train' in params and 'df_test' in params:
+        # If function expects both 'df_train' and 'df_test'        
                 self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
+            elif 'var' in params:
+        # If function expects a 'var' parameter
+        # Retrieve the list of variables (assumed to be passed as a list to 'var')
+                variable_list = dataset.RCA_FEATURES_SUBCAT
+                print(variable_list)
+        # Apply the function to each variable in the list for both train and test DataFrames
+                for variable in variable_list:
+                    self.df_train = func(self.df_train, var = variable)
+                    self.df_test = func(self.df_test, var = variable)
             else:
+        # If the function does not expect 'df_train', 'df_test', or 'var'
                 self.df_train = func(self.df_train)
                 self.df_test = func(self.df_test)
+        
 
 
         self.df_train = sklearn.utils.shuffle(self.df_train, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
         self.df_test = sklearn.utils.shuffle(self.df_test, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
-        self.df_train = self.df_train.set_index('id', drop=False)
-        self.df_test = self.df_test.set_index('id', drop=False)
+        self.df_train = self.df_train.set_index('PropertyKey_ID', drop=False)
+        self.df_test = self.df_test.set_index('PropertyKey_ID', drop=False)
 
         feature_cols = list(self.df_test.columns.intersection(dataset.FEATURES))
 
