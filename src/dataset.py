@@ -1,12 +1,12 @@
 import itertools
-
+import os
 import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
 DATA_DIR = 'C:/Users/kaius/Documents/Kai/Praktika, Freiwilligenarbeit und Führerschein/ECB'
 # DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
-METADATA_DIR = '/p/projects/eubucco/data/3-ml-inputs'
+METADATA_DIR = 'C:/Users/kaius/Documents/Master Thesis/ufo-prediction/metadata'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
 # METADATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'metadata'))
 
@@ -317,7 +317,7 @@ RCA_FEATURES = [
     'City_tx',
     'State_cd',
     'Zip_cd',
-    'Country_tx',
+    'country',
     'Region',
     'RCA_Metros_tx',
     'RCA_Markets_tx',
@@ -434,7 +434,12 @@ RCA_FEATURES = [
     'EligibleForCapRates_fg',
     'Active_fg',
     'ModificationType_tx',
-    'MaxChanged_dt'
+    'MaxChanged_dt',
+    'residential_type',
+    'age_bin',
+    'age_min',
+    'age_max',
+    'heating_demand'
 ]
 
 RCA_FEATURES_CAT = [
@@ -449,7 +454,7 @@ RCA_FEATURES_CAT = [
     'City_tx',
     'State_cd',
     'Zip_cd',
-    'Country_tx',
+    'country',
     'Region',
     'RCA_Metros_tx',
     'RCA_Markets_tx',
@@ -513,26 +518,42 @@ RCA_FEATURES_CAT = [
     'Loan_Orig_dt',
     'Loan_Cross_Default_fg',
     'Originator_tx',
-    'MaxChanged_dt'
+    'MaxChanged_dt',
+    'residential_type',
+    'age_bin',
+    'age_min',
+    'age_max',
+    'heating_demand'
 ]
 
 RCA_FEATURES_SUB = [
     "PropertyKey_ID",
     "Deal_id",
     "Property_id",
-    "Status_tx",
-    "Status_dt",
-    "TransType_tx",
-    "Country_tx",
-    "Main Type",
-    "SubType",
-    "DealQualifyer",
-    "Deal_Update_dt",
-    "Property_Update_dt",
-    "Excess_Land_Potential_fg",
     "Lat_nb",
     "Lon_nb",
     "BuyerAssumedDebt",
+    "year",
+    "Property_nb",
+    "Price",
+    "StatusPriceAdjustedUSD_amt",
+    "PriceEuro",
+    "StatusPriceAdjustedEUR_amt",
+    "PSF/PPU",
+    "SqFt_nb",
+    "NumberBldgs_nb",
+    "NumberFloors_nb",
+    "residential_type"
+]
+
+RCA_FEATURES_SUBCAT = [
+    "Status_tx",
+    "TransType_tx",
+    "country",
+    "Main Type",
+    "SubType",
+    "DealQualifyer",
+    "Excess_Land_Potential_fg",
     "CMBS_fg",
     "Deal5M_fg",
     "Deal10M_fg",
@@ -540,14 +561,6 @@ RCA_FEATURES_SUB = [
     "EligibleForPPU_fg",
     "EligibleForCapRates_fg",
     "Active_fg",
-    "MaxChanged_dt",
-    "year",
-    "age_bracket",
-    "Property_nb",
-    "Price",
-    "StatusPriceAdjustedUSD_amt",
-    "PriceEuro",
-    "StatusPriceAdjustedEUR_amt",
     "BuyerObjective",
     "BuyerCapGroup1",
     "BuyerCapType1",
@@ -562,7 +575,6 @@ RCA_FEATURES_SUB = [
     "Leaseback_fg",
     "City_tx",
     "CBD_fg",
-    "PSF/PPU",
     "Zip_cd",
     "BuyerCountry",
     "BuyerName1",
@@ -570,48 +582,8 @@ RCA_FEATURES_SUB = [
     "SellerName1",
     "SellerCountry",
     "Tenancy_tx",
-    "SqFt_nb",
-    "NumberBldgs_nb",
-    "NumberFloors_nb"
+    "residential_type"
 ]
-
-RCA_FEATURES_SUBCAT = [
-    'Status_tx',
-    'Status_dt',
-    'TransType_tx',
-    'Country_tx',
-    'Main Type',
-    'SubType',
-    'DealQualifyer',
-    'Deal_Update_dt',
-    'Property_Update_dt',
-    'MaxChanged_dt',
-    'age_bracket',
-    'BuyerObjective',
-    'BuyerCapGroup1',
-    'BuyerCapType1',
-    'PropertyName',
-    'Region',
-    'State_cd',
-    'RCA_Metros_tx',
-    'SellerCapGroup1',
-    'SellerCapType1',
-    'County_nm',
-    'RCA_Markets_tx',
-    'Leaseback_fg',
-    'City_tx',
-    'CBD_fg',
-    'Zip_cd',
-    'BuyerCountry',
-    'BuyerName1',
-    'Address_tx',
-    'SellerName1',
-    'SellerCountry',
-    'Tenancy_tx',
-    'NumberFloors_nb'
-]
-
-
 
 
 #TARGET_ATTRIBUTES = [AGE_ATTRIBUTE, TYPE_ATTRIBUTE, HEIGHT_ATTRIBUTE, 'floors']
@@ -623,6 +595,7 @@ STREET_FEATURES_ALL = STREET_FEATURES + STREET_FEATURES_NEIGHBORHOOD + STREET_FE
 
 NEIGHBORHOOD_FEATURES = BUILDING_FEATURES_NEIGHBORHOOD + BUILDING_FEATURES_NEIGHBORHOOD + STREET_FEATURES_NEIGHBORHOOD + STREET_FEATURES_CENTRALITY
 SPATIALLY_EXPLICIT_FEATURES = BUILDING_FEATURES + BLOCK_FEATURES + STREET_FEATURES
+
 
 # FEATURES = list(itertools.chain(
 #     BUILDING_FEATURES,
@@ -636,5 +609,6 @@ SPATIALLY_EXPLICIT_FEATURES = BUILDING_FEATURES + BLOCK_FEATURES + STREET_FEATUR
 #     # LANDUSE_FEATURES,
 # ))
 FEATURES = list(itertools.chain(
-    RCA_FEATURES_SUB
+    RCA_FEATURES_SUB,
+    RCA_FEATURES_SUBCAT
 ))

@@ -159,22 +159,24 @@ class Predictor:
             if 'df_train' in params and 'df_test' in params:
         # If function expects both 'df_train' and 'df_test'        
                 self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
-            elif 'var' in params:
-        # If function expects a 'var' parameter
-        # Retrieve the list of variables (assumed to be passed as a list to 'var')
-                variable_list = dataset.RCA_FEATURES_SUBCAT
-                print(variable_list)
-        # Apply the function to each variable in the list for both train and test DataFrames
-                for variable in variable_list:
-                    self.df_train = func(self.df_train, var = variable)
-                    self.df_test = func(self.df_test, var = variable)
+            elif 'vars_list' in params:
+                variable_list = None
+        # If function expects a 'vars_list' parameter
+        # Determine which list of variables to use based on the function
+                if func.__name__ == "categorical_to_int_byList":
+                    variable_list = dataset.RCA_FEATURES_SUBCAT
+                elif func.__name__ == "convert_to_double_byList":
+                    variable_list = dataset.RCA_FEATURES_SUB    
+
+                print(f"Applying {func.__name__} to variables: {variable_list}")
+        # Apply the function to the DataFrame using the list of variables
+                self.df_train = func(self.df_train, vars_list=variable_list)
+                self.df_test = func(self.df_test, vars_list=variable_list)
             else:
         # If the function does not expect 'df_train', 'df_test', or 'var'
                 self.df_train = func(self.df_train)
                 self.df_test = func(self.df_test)
         
-
-
         self.df_train = sklearn.utils.shuffle(self.df_train, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
         self.df_test = sklearn.utils.shuffle(self.df_test, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
@@ -182,6 +184,7 @@ class Predictor:
         self.df_test = self.df_test.set_index('PropertyKey_ID', drop=False)
 
         feature_cols = list(self.df_test.columns.intersection(dataset.FEATURES))
+        logger.info(f'Features selected are: {feature_cols}')
 
         self.aux_vars_train = self.df_train.drop(columns=feature_cols + [self.target_attribute])
         self.aux_vars_test = self.df_test.drop(columns=feature_cols + [self.target_attribute])
@@ -191,6 +194,9 @@ class Predictor:
 
         self.X_test = self.df_test[feature_cols]
         self.y_test = self.df_test[[self.target_attribute]]
+
+        #logger.info(f'Features in x_train are: {self.X_train.columns}')
+        #logger.info(f'Features in x_test are: {self.X_test.columns}')
 
 
     def _train(self):
