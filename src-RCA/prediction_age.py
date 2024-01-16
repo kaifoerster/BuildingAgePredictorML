@@ -72,8 +72,8 @@ class AgePredictor(Regressor):
     def print_model_error(self):
         super().print_model_error()
         r2, mape = self.energy_error()
-        print(f'R2: {r2:.4f}')
-        print(f'MAPE: {mape:.4f}')
+        print(f'Energy need for heating in kWh/(m²a) R2: {r2:.4f}')
+        print(f'Energy need for heating in kWh/(m²a) MAPE: {mape:.4f}')
 
 
     def evaluate(self):
