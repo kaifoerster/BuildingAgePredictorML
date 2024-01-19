@@ -4,9 +4,9 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = 'C:/Users/kaius/Documents/Kai/Praktika, Freiwilligenarbeit und Führerschein/ECB'
+DATA_DIR = 'workspace/ufo-prediction/demo'
 # DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
-METADATA_DIR = 'C:/Users/kaius/Documents/Master Thesis/ufo-prediction/metadata'
+METADATA_DIR = 'workspace/ufo-prediction/metadata'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
 # METADATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'metadata'))
 
@@ -34,7 +34,7 @@ BUILDING_TYPES = [
 ]
 
 #AGE_ATTRIBUTE = 'age'
-AGE_ATTRIBUTE = 'YearBlt_new2'
+AGE_ATTRIBUTE = 'age_right'
 TYPE_ATTRIBUTE = 'type'
 HEIGHT_ATTRIBUTE = 'height'
 AUX_VARS = [
@@ -598,17 +598,25 @@ SPATIALLY_EXPLICIT_FEATURES = BUILDING_FEATURES + BLOCK_FEATURES + STREET_FEATUR
 
 
 # FEATURES = list(itertools.chain(
-#     BUILDING_FEATURES,
-#     BUILDING_FEATURES_NEIGHBORHOOD,
-#     BLOCK_FEATURES,
-#     BLOCK_FEATURES_NEIGHBORHOOD,
-#     STREET_FEATURES,
-#     STREET_FEATURES_NEIGHBORHOOD,
-#     STREET_FEATURES_CENTRALITY,
-#     CITY_FEATURES,
-#     # LANDUSE_FEATURES,
+    # BUILDING_FEATURES,
+    # BUILDING_FEATURES_NEIGHBORHOOD,
+    # BLOCK_FEATURES,
+    # BLOCK_FEATURES_NEIGHBORHOOD,
+    # STREET_FEATURES,
+    # STREET_FEATURES_NEIGHBORHOOD,
+    # STREET_FEATURES_CENTRALITY,
+    # CITY_FEATURES,
+    # LANDUSE_FEATURES,
 # ))
 FEATURES = list(itertools.chain(
     RCA_FEATURES_SUB,
-    RCA_FEATURES_SUBCAT
+    RCA_FEATURES_SUBCAT,
+    BUILDING_FEATURES,
+    BUILDING_FEATURES_NEIGHBORHOOD,
+    BLOCK_FEATURES,
+    BLOCK_FEATURES_NEIGHBORHOOD,
+    STREET_FEATURES,
+    STREET_FEATURES_NEIGHBORHOOD,
+    STREET_FEATURES_CENTRALITY,
+    CITY_FEATURES
 ))

@@ -222,6 +222,8 @@ class Predictor:
 
         if self.hyperparameters:
             model_params = {**model_params, **self.hyperparameters}
+        
+        self.model.set_params(**model_params)  
 
         if self._xgboost_model():
             fit_params['verbose'] = utils.verbose()

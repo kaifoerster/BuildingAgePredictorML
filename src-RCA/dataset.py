@@ -4,9 +4,12 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = 'C:/Users/kaius/Documents/Kai/Praktika, Freiwilligenarbeit und Führerschein/ECB'
+DATA_DIR = 'workspace/ufo-prediction/demo'
+METADATA_DIR = 'workspace/ufo-prediction/metadata'
+
+#DATA_DIR = 'C:/Users/kaius/Documents/Kai/Praktika, Freiwilligenarbeit und Führerschein/ECB'
 # DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
-METADATA_DIR = 'C:/Users/kaius/Documents/Master Thesis/ufo-prediction/metadata'
+#METADATA_DIR = 'C:/Users/kaius/Documents/Master Thesis/ufo-prediction/metadata'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
 # METADATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'metadata'))
 
@@ -34,7 +37,7 @@ BUILDING_TYPES = [
 ]
 
 #AGE_ATTRIBUTE = 'age'
-AGE_ATTRIBUTE = 'YearBlt_new2'
+AGE_ATTRIBUTE = 'YearBlt'
 TYPE_ATTRIBUTE = 'type'
 HEIGHT_ATTRIBUTE = 'height'
 AUX_VARS = [
