@@ -4,8 +4,10 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
-METADATA_DIR = '/p/projects/eubucco/data/3-ml-inputs'
+DATA_DIR = 'workspace/ufo-prediction/demo'
+METADATA_DIR = 'workspace/ufo-prediction/metadata'
+#DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
+#METADATA_DIR = '/p/projects/eubucco/data/3-ml-inputs'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
 # METADATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'metadata'))
 
@@ -32,7 +34,7 @@ BUILDING_TYPES = [
     # Indifférencié == n.a.
 ]
 
-AGE_ATTRIBUTE = 'age'
+AGE_ATTRIBUTE = 'age_right'
 TYPE_ATTRIBUTE = 'type'
 HEIGHT_ATTRIBUTE = 'height'
 AUX_VARS = [
@@ -298,6 +300,68 @@ SELECTED_FEATURES = [
     'av_footprint_area_within_buffer_100',
     'av_elongation_within_buffer_100'
 ]
+
+RCA_FEATURES_SUB = [
+    "PropertyKey_ID",
+    "Deal_id",
+    "Property_id",
+    "Lat_nb",
+    "Lon_nb",
+    "BuyerAssumedDebt",
+    "year",
+    "Property_nb",
+    "Price",
+    "StatusPriceAdjustedUSD_amt",
+    "PriceEuro",
+    "StatusPriceAdjustedEUR_amt",
+    "PSF/PPU",
+    "SqFt_nb",
+    "NumberBldgs_nb",
+    "NumberFloors_nb",
+    "residential_type"
+]
+
+RCA_FEATURES_SUBCAT = [
+    "Status_tx",
+    "TransType_tx",
+    "country_left",
+    "Main Type",
+    "SubType",
+    "DealQualifyer",
+    "Excess_Land_Potential_fg",
+    "CMBS_fg",
+    "Deal5M_fg",
+    "Deal10M_fg",
+    "EligibleForVolume_fg",
+    "EligibleForPPU_fg",
+    "EligibleForCapRates_fg",
+    "Active_fg",
+    "BuyerObjective",
+    "BuyerCapGroup1",
+    "BuyerCapType1",
+    "PropertyName",
+    "Region",
+    "State_cd",
+    "RCA_Metros_tx",
+    "SellerCapGroup1",
+    "SellerCapType1",
+    "County_nm",
+    "RCA_Markets_tx",
+    "Leaseback_fg",
+    "City_tx",
+    "CBD_fg",
+    "Zip_cd",
+    "BuyerCountry",
+    "BuyerName1",
+    "Address_tx",
+    "SellerName1",
+    "SellerCountry",
+    "Tenancy_tx"
+]
+
+RCA_FEATURES_EXTRA = ['Unnamed: 0', 'Status_dt', 'Deal_Update_dt', 'Property_Update_dt', 'MaxChanged_dt', 'age_bracket', 'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'geometry', 'index_right0', 'index_right1']
+
+
 TARGET_ATTRIBUTES = [AGE_ATTRIBUTE, TYPE_ATTRIBUTE, HEIGHT_ATTRIBUTE, 'floors']
 
 BUILDING_FEATURES_ALL = BUILDING_FEATURES + BUILDING_FEATURES_NEIGHBORHOOD
