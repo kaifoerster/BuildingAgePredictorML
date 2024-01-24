@@ -454,7 +454,7 @@ RCA_FEATURES_CAT = [
     'City_tx',
     'State_cd',
     'Zip_cd',
-    'country_left',
+    'country',
     'Region',
     'RCA_Metros_tx',
     'RCA_Markets_tx',
@@ -549,7 +549,7 @@ RCA_FEATURES_SUB = [
 RCA_FEATURES_SUBCAT = [
     "Status_tx",
     "TransType_tx",
-    "country_left",
+    "country",
     "Main Type",
     "SubType",
     "DealQualifyer",

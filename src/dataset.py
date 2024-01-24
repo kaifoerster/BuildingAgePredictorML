@@ -317,14 +317,12 @@ RCA_FEATURES_SUB = [
     "PSF/PPU",
     "SqFt_nb",
     "NumberBldgs_nb",
-    "NumberFloors_nb",
-    "residential_type"
+    "NumberFloors_nb"
 ]
 
 RCA_FEATURES_SUBCAT = [
     "Status_tx",
     "TransType_tx",
-    "country_left",
     "Main Type",
     "SubType",
     "DealQualifyer",
