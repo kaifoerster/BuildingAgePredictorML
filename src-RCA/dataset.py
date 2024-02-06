@@ -37,7 +37,7 @@ BUILDING_TYPES = [
 ]
 
 #AGE_ATTRIBUTE = 'age'
-AGE_ATTRIBUTE = 'YearBlt'
+AGE_ATTRIBUTE = 'age_right'
 TYPE_ATTRIBUTE = 'type'
 HEIGHT_ATTRIBUTE = 'height'
 AUX_VARS = [
@@ -588,6 +588,8 @@ RCA_FEATURES_SUBCAT = [
     "residential_type"
 ]
 
+UFO_EXTRA = ['country_right', 'height', 'Unnamed: 0.1', 'sbb', 'id_source', 'city', 'id_misaligned', 'id', 'type_source', 'floors', 'TouchesIndexes', 'type', 
+             'neighborhood', 'distances', 'match_type', 'BldLenProxy',  'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'residential_type', 'geometry', 'index_right0', 'index_right1', 'source_file', 'block', 'age_bracket']
 
 #TARGET_ATTRIBUTES = [AGE_ATTRIBUTE, TYPE_ATTRIBUTE, HEIGHT_ATTRIBUTE, 'floors']
 TARGET_ATTRIBUTES = [AGE_ATTRIBUTE]
@@ -600,17 +602,19 @@ NEIGHBORHOOD_FEATURES = BUILDING_FEATURES_NEIGHBORHOOD + BUILDING_FEATURES_NEIGH
 SPATIALLY_EXPLICIT_FEATURES = BUILDING_FEATURES + BLOCK_FEATURES + STREET_FEATURES
 
 
-# FEATURES = list(itertools.chain(
-#     BUILDING_FEATURES,
-#     BUILDING_FEATURES_NEIGHBORHOOD,
-#     BLOCK_FEATURES,
-#     BLOCK_FEATURES_NEIGHBORHOOD,
-#     STREET_FEATURES,
-#     STREET_FEATURES_NEIGHBORHOOD,
-#     STREET_FEATURES_CENTRALITY,
-#     CITY_FEATURES,
-#     # LANDUSE_FEATURES,
-# ))
+FEATURES_UFO = list(itertools.chain(
+    BUILDING_FEATURES,
+    BUILDING_FEATURES_NEIGHBORHOOD,
+    BLOCK_FEATURES,
+    BLOCK_FEATURES_NEIGHBORHOOD,
+    STREET_FEATURES,
+    STREET_FEATURES_NEIGHBORHOOD,
+    STREET_FEATURES_CENTRALITY,
+    CITY_FEATURES,
+    UFO_EXTRA
+    # LANDUSE_FEATURES,
+))
+
 FEATURES = list(itertools.chain(
     RCA_FEATURES_SUB,
     RCA_FEATURES_SUBCAT
