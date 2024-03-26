@@ -113,7 +113,7 @@ class Predictor:
 
     def _clean(self):
         self.df.dropna(subset=[self.target_attribute], inplace=True)
-        self.df.drop_duplicates(subset=['PropertyKey_ID'], inplace=True)
+        self.df.drop_duplicates(subset=['id'], inplace=True)
         logger.info(f'Dataset length: {len(self.df)}')
         logger.info(f'Dataset allocated memory: {int(self.df.memory_usage(index=True).sum() / 1024 / 1024)} MB')
 
@@ -121,7 +121,7 @@ class Predictor:
     def _pre_preprocess_analysis_hook(self):
         logger.info(f'Training dataset length: {len(self.df_train)}')
         logger.info(f'Test dataset length: {len(self.df_test)}')
-        logger.info(f'Test cities: {self.df_test["City_tx"].unique()}')
+        logger.info(f'Test cities: {self.df_test["city"].unique()}')
 
 
     def _abort_signal(self):
@@ -141,50 +141,23 @@ class Predictor:
 
     def _preprocess(self):
 
-        # for func in self.preprocessing_stages:
-        #     params = inspect.signature(func).parameters
-
-        #     if 'df_train' in params and 'df_test' in params:
-        #         self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
-        #     elif 'var' in params:
-        #         self.df_train = func(self.df_train)
-        #         self.df_test = func(self.df_test)
-        #     else:
-        #         self.df_train = func(self.df_train)
-        #         self.df_test = func(self.df_test)
-   
         for func in self.preprocessing_stages:
             params = inspect.signature(func).parameters
-            
-            if 'df_train' in params and 'df_test' in params:
-        # If function expects both 'df_train' and 'df_test'        
-                self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
-            elif 'vars_list' in params:
-                variable_list = None
-        # If function expects a 'vars_list' parameter
-        # Determine which list of variables to use based on the function
-                if func.__name__ == "categorical_to_int_byList":
-                    variable_list = dataset.RCA_FEATURES_SUBCAT
-                elif func.__name__ == "convert_to_double_byList":
-                    variable_list = dataset.RCA_FEATURES_SUB    
 
-                print(f"Applying {func.__name__} to variables: {variable_list}")
-        # Apply the function to the DataFrame using the list of variables
-                self.df_train = func(self.df_train, vars_list=variable_list)
-                self.df_test = func(self.df_test, vars_list=variable_list)
+            if 'df_train' in params and 'df_test' in params:
+                self.df_train, self.df_test = func(df_train=self.df_train, df_test=self.df_test)
             else:
-        # If the function does not expect 'df_train', 'df_test', or 'var'
                 self.df_train = func(self.df_train)
                 self.df_test = func(self.df_test)
-        
+
+
         self.df_train = sklearn.utils.shuffle(self.df_train, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
         self.df_test = sklearn.utils.shuffle(self.df_test, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
-        self.df_train = self.df_train.set_index('PropertyKey_ID', drop=False)
-        self.df_test = self.df_test.set_index('PropertyKey_ID', drop=False)
+        self.df_train = self.df_train.set_index('id', drop=False)
+        self.df_test = self.df_test.set_index('id', drop=False)
 
         feature_cols = list(self.df_test.columns.intersection(dataset.FEATURES))
-        logger.info(f'Features selected are: {feature_cols}')
 
         self.aux_vars_train = self.df_train.drop(columns=feature_cols + [self.target_attribute])
         self.aux_vars_test = self.df_test.drop(columns=feature_cols + [self.target_attribute])
@@ -194,9 +167,6 @@ class Predictor:
 
         self.X_test = self.df_test[feature_cols]
         self.y_test = self.df_test[[self.target_attribute]]
-
-        #logger.info(f'Features in x_train are: {self.X_train.columns}')
-        #logger.info(f'Features in x_test are: {self.X_test.columns}')
 
 
     def _train(self):
@@ -222,7 +192,7 @@ class Predictor:
 
         if self.hyperparameters:
             model_params = {**model_params, **self.hyperparameters}
-        
+
         self.model.set_params(**model_params)    
 
         if self._xgboost_model():

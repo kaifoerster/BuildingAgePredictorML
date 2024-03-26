@@ -59,17 +59,17 @@ def assign_heating_energy_demand(df, labels=None):
         # matching on existing age bins (classification)
         class_to_label = dict(enumerate(labels))
         df['age_bin'] = df['age'].map(class_to_label)
-        df = pd.merge(df, tabula_energy_df,  how='left', on=['country', 'residential_type', 'age_bin']).set_index('Unnamed: 0', drop=False)
+        df = pd.merge(df, tabula_energy_df,  how='left', on=['country', 'residential_type', 'age_bin']).set_index('id', drop=False)
     else:
         # binning continuous age (regression)
-        df = pd.merge(df, tabula_energy_df,  how='left', on=['country', 'residential_type']).set_index('Unnamed: 0', drop=False)
+        df = pd.merge(df, tabula_energy_df,  how='left', on=['country', 'residential_type']).set_index('id', drop=False)
         df[f'{dataset.AGE_ATTRIBUTE}'] = pd.to_numeric(df[f'{dataset.AGE_ATTRIBUTE}'], errors='coerce').fillna(0).astype('int64')
         #df = df[df[f'{dataset.AGE_ATTRIBUTE}'] == 0]
         df['age_min'] = df['age_min'].astype('int64')
         df['age_max'] = df['age_max'].astype('int64')
         df = df.query(f'age_min <= {dataset.AGE_ATTRIBUTE} < age_max')
         
-    df = df.drop_duplicates(subset='Unnamed: 0', keep='last')
+    df = df.drop_duplicates(subset='id', keep='last')
     if n_buildings != len(df):
         logger.error(f'Assigning heating energy demand failed. Number of building changed during merge of TABULA data from {n_buildings} to {len(df)}. Dropped buildings include:\n{list(index.difference(df.index))[:10]}')
 
