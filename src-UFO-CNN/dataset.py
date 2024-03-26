@@ -66,6 +66,7 @@ BUILDING_FEATURES = [
     'SharedWallLength',
     'lat',
     'lon',
+    'CNN_age_bracket'
 ]
 BUILDING_FEATURES_NEIGHBORHOOD = [
     'av_convexity_within_buffer_100',
