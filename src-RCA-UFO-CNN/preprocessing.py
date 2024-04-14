@@ -57,6 +57,10 @@ def shuffle_feature_values(df):
 def split_80_20(df):
     return model_selection.train_test_split(df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
+def balanced_split_80_20(df, balanced_attribute = None):
+    return model_selection.train_test_split(df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEE, stratify=df[balanced_attribute])
+
+
 
 def split_50_50(df):
     return model_selection.train_test_split(df, test_size=0.5, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
