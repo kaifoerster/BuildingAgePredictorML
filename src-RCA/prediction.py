@@ -515,7 +515,31 @@ class Regressor(Predictor):
         print('RMSE: {:.2f} y'.format(self.rmse()))
         print('R2: {:.4f}'.format(self.r2()))
 
+    @Predictor.cv_aware
+    def balanced_error(self, balanced_attribute=None):
+        # Ensure the balanced attribute exists in the DataFrame
+        if balanced_attribute not in self.df_test.columns:
+            raise ValueError(f"Balanced attribute '{balanced_attribute}' not found in the test dataset.")
+        
+        grouped = self.df_test.groupby(balanced_attribute)  # Group by the balanced attribute
+        results = []
 
+        for name, group in grouped:
+            y_true = group[self.target_attribute]
+            y_pred = self.y_predict.loc[group.index]
+            
+            # Calculate the metrics
+            mae = metrics.mean_absolute_error(y_true, y_pred)
+            rmse = np.sqrt(metrics.mean_squared_error(y_true, y_pred))
+            r2 = metrics.r2_score(y_true, y_pred)
+
+            # Append results for this group
+            results.append({'Group': name, 'MAE': mae, 'RMSE': rmse, 'R2': r2})
+        
+        # Create DataFrame from results
+        results_df = pd.DataFrame(results)
+        return results_df
+    
     @Predictor.cv_aware
     def mae(self):
         return metrics.mean_absolute_error(self.y_test, self.y_predict)
@@ -701,13 +725,54 @@ class Classifier(Predictor):
         return eval_df
 
 
+    # @Predictor.cv_aware
+    # def print_model_error(self):
+    #     print(f'Classification report:\n {self.classification_report()}')
+    #     print(f'Cohen’s kappa: {self.kappa():.4f}')
+    #     print(f'Matthews correlation coefficient (MCC): {self.mcc():.4f}')
+
     @Predictor.cv_aware
-    def print_model_error(self):
-        print(f'Classification report:\n {self.classification_report()}')
-        print(f'Cohen’s kappa: {self.kappa():.4f}')
-        print(f'Matthews correlation coefficient (MCC): {self.mcc():.4f}')
+    def print_model_error(self, balanced_attribute=None):
+        if balanced_attribute:
+            # Generate and print the balanced classification report
+            balanced_results = self.balanced_classification_report(balanced_attribute)
+            for group, metrics in balanced_results.items():
+                print(f"\nMetrics for {group}:")
+                print("Classification Report:")
+                print(pd.DataFrame(metrics['report']).transpose())
+                print(f"Cohen’s kappa: {metrics['kappa']:.4f}")
+                print(f"Matthews correlation coefficient (MCC): {metrics['mcc']:.4f}")
+        else:
+            print(f'Classification report:\n {self.classification_report()}')
+            print(f'Cohen’s kappa: {self.kappa():.4f}')
+            print(f'Matthews correlation coefficient (MCC): {self.mcc():.4f}')
+    
+    @Predictor.cv_aware
+    def balanced_classification_report(self, balanced_attribute="_merge"):
+        if balanced_attribute not in self.df_test.columns:
+            raise ValueError(f"Balanced attribute '{balanced_attribute}' not found in the test dataset.")
 
+        grouped = self.df_test.groupby(balanced_attribute)
+        results = {}
 
+        for name, group in grouped:
+            y_true = group[self.target_attribute]
+            y_pred = self.y_predict.loc[group.index][self.target_attribute]
+
+            # Calculate classification report for each group
+            report = metrics.classification_report(y_true, y_pred, output_dict=True)
+            kappa = metrics.cohen_kappa_score(y_true, y_pred)
+            mcc = metrics.matthews_corrcoef(y_true, y_pred)
+
+            # Store the results
+            results[name] = {
+                'report': report,
+                'kappa': kappa,
+                'mcc': mcc
+            }
+
+        return results
+    
     def normalized_feature_importance(self):
         # Calculate feature importance based on SHAP values
         self.calculate_SHAP_values()

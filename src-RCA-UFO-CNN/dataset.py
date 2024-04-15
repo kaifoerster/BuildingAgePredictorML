@@ -66,6 +66,15 @@ BUILDING_FEATURES = [
     'SharedWallLength',
     'lat',
     'lon',
+    'Predicted Class',
+    'Class_0', 
+    'Class_1', 
+    'Class_2', 
+    'Class_3', 
+    'Class_4', 
+    'Class_5', 
+    'Class_6'
+
 ]
 BUILDING_FEATURES_NEIGHBORHOOD = [
     'av_convexity_within_buffer_100',
@@ -543,8 +552,7 @@ RCA_FEATURES_SUB = [
     "SqFt_nb",
     "NumberBldgs_nb",
     "NumberFloors_nb",
-    "residential_type",
-    "CNN_age_bracket"
+    "residential_type"
 ]
 
 RCA_FEATURES_SUBCAT = [

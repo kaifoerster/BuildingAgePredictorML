@@ -57,9 +57,26 @@ def shuffle_feature_values(df):
 def split_80_20(df):
     return model_selection.train_test_split(df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
-def balanced_split_80_20(df, balanced_attribute = None):
-    return model_selection.train_test_split(df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEE, stratify=df[balanced_attribute])
-
+    
+def balanced_split_80_20(df, balanced_attribute="_merge"):
+    if balanced_attribute is not None:
+        # Perform the split with stratification to maintain distribution of the balanced_attribute
+        train_df, test_df = model_selection.train_test_split(
+            df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED, stratify=df[balanced_attribute]
+        )
+        # Log the number of unique values in each category for both train and test sets
+        train_counts = train_df[balanced_attribute].value_counts()
+        test_counts = test_df[balanced_attribute].value_counts()
+        logger.info(f"Train set {balanced_attribute} distribution: {train_counts.to_dict()}")
+        logger.info(f"Test set {balanced_attribute} distribution: {test_counts.to_dict()}")
+    else:
+        # Perform the split without stratification
+        train_df, test_df = model_selection.train_test_split(
+            df, test_size=0.2, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED
+        )
+        logger.info("No balanced attribute provided; random split performed.")
+    
+    return train_df, test_df
 
 
 def split_50_50(df):

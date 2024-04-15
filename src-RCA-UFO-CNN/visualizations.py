@@ -16,9 +16,27 @@ import dataset
 import preprocessing
 import utils
 import geometry
+import math
 
+def clean_data(data):
+    return data.replace([np.inf, -np.inf], pd.NA).dropna()
 
-def plot_histogram(y_test, y_predict, bins=None, bin_labels=[], **kwargs):
+def plot_histogram(y_test, y_predict, bins=None, title='Age distribution', bin_labels=[], **kwargs):
+    # print("Plotting histogram")
+    # y_test = clean_data(y_test)
+    # y_predict = clean_data(y_predict)
+
+    # if y_test.empty or y_predict.empty:
+    #     print("Warning: One or both of the datasets are empty. Cannot plot histogram.")
+    #     return
+    
+    # if len(y_predict) < 100: 
+    #     min_age = math.floor(y_predict[dataset.AGE_ATTRIBUTE].min())
+    #     max_age = math.ceil(y_predict[dataset.AGE_ATTRIBUTE].max())
+    #     bins = np.linspace(min_age, max_age, 5)
+    #     #bins = np.quantile(y_predict[dataset.AGE_ATTRIBUTE], [0, 0.25, 0.5, 0.75, 1])
+    #     print(f"Fixed bins used due to small dataset size: {bins}")
+
     with SubplotManager(**kwargs) as ax:
         if bin_labels:
             ax.set_xticklabels([None] + bin_labels)
@@ -42,7 +60,8 @@ def plot_histogram(y_test, y_predict, bins=None, bin_labels=[], **kwargs):
             label='y_test'
         )
         ax.legend()
-        ax.set_title('age distributions')
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+        ax.set_title(title)
 
 
 def plot_distribution(data):
@@ -112,6 +131,8 @@ def plot_relative_grid(y_test, y_predict, bin_size=5, **kwargs):
 
     ax_scatter.set_xlabel('Predicted construction year')
     ax_scatter.set_ylabel('True construction year')
+
+
 
 
 def plot_grid(y_test, y_predict):
@@ -191,7 +212,7 @@ def plot_models_classification_error(evals_results, **kwargs):
         ax.set_title('XGBoost Classification Error Comparison')
 
 
-def plot_confusion_matrix(y_test, y_predict, class_labels, **kwargs):
+def plot_confusion_matrix(y_test, y_predict, class_labels, title=None, **kwargs):
     with SubplotManager(**kwargs) as ax:
         cm = metrics.confusion_matrix(y_test, y_predict)
         norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
@@ -199,7 +220,18 @@ def plot_confusion_matrix(y_test, y_predict, class_labels, **kwargs):
                     xticklabels=class_labels, yticklabels=class_labels, cmap='bone', cbar=True)
         ax.set_xlabel('Predicted construction year', fontsize=16, labelpad=15)
         ax.set_ylabel('True construction year', fontsize=16, labelpad=15)
+        ax.set_title(title, fontsize=14)  # Setting the title with the group name
 
+def plot_confusion_matrix_manual(y_test, y_predict, class_labels, vmax=0.4, title=None, **kwargs):
+    with SubplotManager(**kwargs) as ax:
+        cm = metrics.confusion_matrix(y_test, y_predict)
+        norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        #vmax = np.max(norm_cm)
+        sns.heatmap(norm_cm, annot=np.round(norm_cm, 2), fmt='g', ax=ax, vmin=0, vmax=vmax,
+                    xticklabels=class_labels, yticklabels=class_labels, cmap='bone', cbar=True)
+        ax.set_xlabel('Predicted construction year', fontsize=16, labelpad=15)
+        ax.set_ylabel('True construction year', fontsize=16, labelpad=15)
+        ax.set_title(title, fontsize=14)  
 
 def plot_feature_over_time(df, overlap_coef=None, feature_selection=[], round=1, **kwargs):
     df = df.copy()

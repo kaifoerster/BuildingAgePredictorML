@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 import utils
 import visualizations
 import dataset
@@ -69,22 +70,67 @@ class AgePredictor(Regressor):
 
 
     @Predictor.cv_aware
-    def print_model_error(self):
+    def print_model_error(self, balanced_attribute=None):
         super().print_model_error()
         r2, mape = self.energy_error()
         print(f'Energy need for heating in kWh/(m²a) R2: {r2:.4f}')
         print(f'Energy need for heating in kWh/(m²a) MAPE: {mape:.4f}')
 
+        if balanced_attribute:
+            error_by_group = self.balanced_error(balanced_attribute)
+            print(f"Error metrics by {balanced_attribute}:")
+            print(error_by_group)
 
-    def evaluate(self):
-        self.print_model_error()
-        _, axis = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)
-        visualizations.plot_regression_error(self.model, ax=axis[0])
-        visualizations.plot_histogram(
-            self.y_test, self.y_predict, bins=utils.age_bins(self.y_predict), ax=axis[1])
-        visualizations.plot_relative_grid(self.y_test, self.y_predict)
-        plt.show()
 
+    # def evaluate(self, balanced_attribute=None):
+    #     self.print_model_error(balanced_attribute=balanced_attribute)
+    #     _, axis = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)
+    #     visualizations.plot_regression_error(self.model, ax=axis[0])
+    #     visualizations.plot_histogram(
+    #         self.y_test, self.y_predict, bins=utils.age_bins(self.y_predict), ax=axis[1])
+    #     visualizations.plot_relative_grid(self.y_test, self.y_predict)
+    #     plt.show()
+
+    def evaluate(self, balanced_attribute=None):
+        self.print_model_error(balanced_attribute=balanced_attribute)
+
+        if balanced_attribute and balanced_attribute in self.df_test.columns:
+            unique_groups = self.df_test[balanced_attribute].unique()
+            n_groups = len(unique_groups)
+            fig, axes = plt.subplots(nrows=n_groups, ncols=1, figsize=(14, 10), constrained_layout=True)
+
+            for i, group in enumerate(unique_groups):
+                print(group)
+                group_data = self.df_test[self.df_test[balanced_attribute] == group]
+                y_true_group = group_data[self.target_attribute]
+                y_pred_group = self.y_predict.loc[group_data.index]
+                y_true_group = pd.DataFrame(y_true_group)
+                    # Ensure y_true_group and y_pred_group have correct formats
+                if not isinstance(y_true_group, pd.DataFrame):
+                    raise ValueError(f"Expected y_true_group to be a pandas Series, got {type(y_true_group)} instead.")
+                if not isinstance(y_pred_group, pd.DataFrame):
+                    y_pred_group = y_pred_group.squeeze()  # Attempt to convert DataFrame to Series if possible
+                    if not isinstance(y_pred_group, pd.Series):
+                        raise ValueError(f"Expected y_pred_group to be a pandas Series, got {type(y_pred_group)} instead.")
+                
+                print(len(y_pred_group))
+                print(len(y_true_group))
+                # Setting up individual figures for each group to handle plots cleanly
+                #plt.suptitle(f'Analysis for {group}', fontsize=16)
+                #visualizations.plot_regression_error(self.model, ax=axes[i, 0])
+                visualizations.plot_histogram(y_true_group, y_pred_group, bins=utils.age_bins(y_pred_group), ax=axes[i])
+                visualizations.plot_relative_grid(y_true_group, y_pred_group)
+                plt.show()
+                
+        else:
+            # Execute non-group-specific plots
+            _, axis = plt.subplots(1, 2, figsize=(14, 6), constrained_layout=True)
+            visualizations.plot_regression_error(self.model, ax=axis[0])
+            visualizations.plot_histogram(
+                self.y_test, self.y_predict, bins=utils.age_bins(self.y_predict), ax=axis[1])
+            visualizations.plot_relative_grid(self.y_test, self.y_predict)
+            plt.show()
+    
 
     def evaluate_regression(self):
         self.evaluate()  # for backwards compatibility
@@ -152,24 +198,75 @@ class AgeClassifier(Classifier):
         return eval_df
 
     @Predictor.cv_aware
-    def print_model_error(self):
+    def print_model_error(self, balanced_attribute=None):
         super().print_model_error()
+        
         if self.bins in dataset.TABULA_AGE_BINS.values():
             r2, mape = self.energy_error()
             print(f'R2: {r2:.4f}')
             print(f'MAPE: {mape:.4f}')
+        
+        if balanced_attribute:
+            # Additional detailed error analysis by balanced attribute
+            balanced_results = self.balanced_classification_report(balanced_attribute)
+            for group, metrics in balanced_results.items():
+                print(f"\nMetrics for {group}:")
+                print("Classification Report:")
+                print(pd.DataFrame(metrics['report']).transpose())
+                print(f"Cohen’s kappa: {metrics['kappa']:.4f}")
+                print(f"Matthews correlation coefficient (MCC): {metrics['mcc']:.4f}")
 
 
-    def evaluate(self):
-        self.print_model_error()
-        _, axis = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
-        visualizations.plot_classification_error(self.model, multiclass=self.multiclass, ax=axis[0, 0])
-        visualizations.plot_log_loss(self.model, multiclass=self.multiclass, ax=axis[0, 1])
-        visualizations.plot_histogram(self.y_test, self.y_predict[[self.target_attribute]], bins=list(
-            range(0, len(self.bins))), bin_labels=self.labels, ax=axis[1, 0])
-        visualizations.plot_confusion_matrix(
-            self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, ax=axis[1, 1])
-        plt.show()
+
+    # def evaluate(self, balanced_attribute=None):
+    #     self.print_model_error(balanced_attribute=balanced_attribute)
+    #     _, axis = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
+    #     visualizations.plot_classification_error(self.model, multiclass=self.multiclass, ax=axis[0, 0])
+    #     visualizations.plot_log_loss(self.model, multiclass=self.multiclass, ax=axis[0, 1])
+    #     visualizations.plot_histogram(self.y_test, self.y_predict[[self.target_attribute]], bins=list(
+    #         range(0, len(self.bins))), bin_labels=self.labels, ax=axis[1, 0])
+    #     visualizations.plot_confusion_matrix(
+    #         self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, ax=axis[1, 1])
+    #     plt.show()
+
+
+
+    def evaluate(self, balanced_attribute=None, vmax = 0.8):
+        self.print_model_error(balanced_attribute=balanced_attribute)
+
+        if balanced_attribute and balanced_attribute in self.df_test.columns:
+            unique_groups = self.df_test[balanced_attribute].unique()
+            n_groups = len(unique_groups)
+            fig, axes = plt.subplots(nrows=n_groups, ncols=2, figsize=(14, 10), constrained_layout=True)
+
+            for i, group in enumerate(unique_groups):
+                group_data = self.df_test[self.df_test[balanced_attribute] == group]
+                y_true_group = group_data[self.target_attribute]
+                y_pred_group = self.y_predict.loc[group_data.index][self.target_attribute]
+
+                 # Ensure y_pred_group is a Series, not a DataFrame
+                if isinstance(y_pred_group, pd.DataFrame):
+                    y_pred_group = y_pred_group[self.target_attribute]
+
+                group_title = f"Age distribution over {group}" 
+                cm_title = f"Confusion matrix over {group}" 
+
+                # Plotting classification error and confusion matrix for each group
+                visualizations.plot_histogram(y_true_group, y_pred_group, bins=list(range(0, len(self.bins))), bin_labels=self.labels, title=group_title, ax=axes[i, 0])
+                visualizations.plot_confusion_matrix_manual(y_true_group, y_pred_group, class_labels=self.labels, vmax=vmax ,title=cm_title, ax=axes[i, 1])
+
+            plt.show()
+        else:
+            _, axis = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
+            visualizations.plot_classification_error(self.model, multiclass=self.multiclass, ax=axis[0, 0])
+            visualizations.plot_log_loss(self.model, multiclass=self.multiclass, ax=axis[0, 1])
+            visualizations.plot_histogram(self.y_test, self.y_predict[[self.target_attribute]], bins=list(
+                range(0, len(self.bins))), bin_labels=self.labels, ax=axis[1, 0])
+            visualizations.plot_confusion_matrix(
+                self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, ax=axis[1, 1])
+            plt.show()
+
+
 
 
     def evaluate_classification(self):
