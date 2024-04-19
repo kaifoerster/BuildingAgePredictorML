@@ -18,7 +18,7 @@ import utils
 import geometry
 
 
-def plot_histogram(y_test, y_predict, bins=None, bin_labels=[], title='Age distribution',**kwargs):
+def plot_histogram(y_test, y_predict, bins=None, bin_labels=[], title='Age distribution', **kwargs):
     with SubplotManager(**kwargs) as ax:
         if bin_labels:
             ax.set_xticklabels([None] + bin_labels)
@@ -42,6 +42,7 @@ def plot_histogram(y_test, y_predict, bins=None, bin_labels=[], title='Age distr
             label='y_test'
         )
         ax.legend()
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
         ax.set_title(title)
 
 
@@ -201,7 +202,17 @@ def plot_confusion_matrix(y_test, y_predict, class_labels, title=None, **kwargs)
         ax.set_ylabel('True construction year', fontsize=16, labelpad=15)
         ax.set_title(title, fontsize=14) 
 
-
+def plot_confusion_matrix_manual(y_test, y_predict, class_labels, vmax=0.4, title=None, **kwargs):
+    with SubplotManager(**kwargs) as ax:
+        cm = metrics.confusion_matrix(y_test, y_predict)
+        norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        #vmax = np.max(norm_cm)
+        sns.heatmap(norm_cm, annot=np.round(norm_cm, 2), fmt='g', ax=ax, vmin=0, vmax=vmax,
+                    xticklabels=class_labels, yticklabels=class_labels, cmap='bone', cbar=True)
+        ax.set_xlabel('Predicted construction year', fontsize=16, labelpad=15)
+        ax.set_ylabel('True construction year', fontsize=16, labelpad=15)
+        ax.set_title(title, fontsize=14) 
+        
 def plot_feature_over_time(df, overlap_coef=None, feature_selection=[], round=1, **kwargs):
     df = df.copy()
     feature_selection = feature_selection or df.columns.drop(['country', dataset.AGE_ATTRIBUTE])

@@ -195,7 +195,7 @@ class AgeClassifier(Classifier):
 
         return eval_df
 
-    @Predictor.cv_aware
+    #@Predictor.cv_aware
     # def print_model_error(self):
     #     super().print_model_error()
     #     if self.bins in dataset.TABULA_AGE_BINS.values():
@@ -203,7 +203,7 @@ class AgeClassifier(Classifier):
     #         print(f'R2: {r2:.4f}')
     #         print(f'MAPE: {mape:.4f}')
 
-
+    @Predictor.cv_aware
     def print_model_error(self, balanced_attribute=None):
         super().print_model_error()
         
