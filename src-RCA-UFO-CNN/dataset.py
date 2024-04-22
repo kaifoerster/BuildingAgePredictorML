@@ -4,7 +4,7 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = 'workspace/ufo-prediction/demo'
+DATA_DIR = 'workspace/ufo-prediction/main notebooks'
 # DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
 METADATA_DIR = 'workspace/ufo-prediction/metadata'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
@@ -536,9 +536,6 @@ RCA_FEATURES_CAT = [
 ]
 
 RCA_FEATURES_SUB = [
-    "PropertyKey_ID",
-    "Deal_id",
-    "Property_id",
     "Lat_nb",
     "Lon_nb",
     "BuyerAssumedDebt",
@@ -551,8 +548,7 @@ RCA_FEATURES_SUB = [
     "PSF/PPU",
     "SqFt_nb",
     "NumberBldgs_nb",
-    "NumberFloors_nb",
-    "residential_type"
+    "NumberFloors_nb"
 ]
 
 RCA_FEATURES_SUBCAT = [
@@ -590,8 +586,7 @@ RCA_FEATURES_SUBCAT = [
     "Address_tx",
     "SellerName1",
     "SellerCountry",
-    "Tenancy_tx",
-    "residential_type"
+    "Tenancy_tx"
 ]
 
 
