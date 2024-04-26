@@ -583,8 +583,8 @@ RCA_FEATURES_SUBCAT = [
     "Tenancy_tx"
 ]
 
-UFO_EXTRA = ['country_right', 'height', 'Unnamed: 0.1', 'sbb', 'id_source', 'city', 'id_misaligned', 'id', 'type_source', 'floors', 'TouchesIndexes', 'type', 
-             'neighborhood', 'distances', 'match_type', 'BldLenProxy',  'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'residential_type', 'geometry', 'index_right0', 'index_right1', 'source_file', 'block', 'age_bracket']
+UFO_EXTRA = ['country_right', 'height', 'sbb', 'id_source', 'city', 'id_misaligned', 'id', 'type_source', 'floors', 'TouchesIndexes', 'type', 
+             'neighborhood', 'distances', 'match_type', 'BldLenProxy',  'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'residential_type', 'geometry', 'source_file', 'block', 'age_bracket']
 
 #TARGET_ATTRIBUTES = [AGE_ATTRIBUTE, TYPE_ATTRIBUTE, HEIGHT_ATTRIBUTE, 'floors']
 TARGET_ATTRIBUTES = [AGE_ATTRIBUTE]

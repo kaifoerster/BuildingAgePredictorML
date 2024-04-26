@@ -268,7 +268,7 @@ def remove_buildings_between_1930_1990(df):
 
 def remove_outliers(df):
     df = df[df[dataset.AGE_ATTRIBUTE] > 1900]
-    df = df[df[dataset.AGE_ATTRIBUTE] < 2020]
+    df = df[df[dataset.AGE_ATTRIBUTE] < 2023]
     return df
 
 

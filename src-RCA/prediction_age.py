@@ -271,8 +271,9 @@ class AgeClassifier(Classifier):
             visualizations.plot_log_loss(self.model, multiclass=self.multiclass, ax=axis[0, 1])
             visualizations.plot_histogram(self.y_test, self.y_predict[[self.target_attribute]], bins=list(
                 range(0, len(self.bins))), bin_labels=self.labels, ax=axis[1, 0])
-            visualizations.plot_confusion_matrix(
-                self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, ax=axis[1, 1])
+            #visualizations.plot_confusion_matrix_manual(
+            #    self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, vamx=vmax, ax=axis[1, 1])
+            visualizations.plot_confusion_matrix_manual(self.y_test, self.y_predict[[self.target_attribute]], class_labels=self.labels, vmax=vmax,title=None, ax=axis[1, 1])
             plt.show()
 
     def evaluate_classification(self):
