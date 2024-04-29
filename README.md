@@ -1,46 +1,21 @@
-# Prediction building age from urban form at large scale
+# Building Age Predictor using Machine Learning
 
-A supervised machine learning approach to predict the construction year of buildings based on publicly available 2D urban morphology data.
+## Project Overview
+This project aims to predict the age of commercial buildings using a unique combination of data sources, including commercial building data, 2D urban morphology data, and Google Street View images. By leveraging machine learning techniques, we provide insights into urban development patterns and architectural evolution.
 
-## Demo
-See [prediction demo](demo/demo.ipynb) Jupyter notebook using building data from France, Spain, and the Netherlands.
-![](./figures/data-overview-color-coded.png)
-
-## Dependencies
-Using pip:
-```
-$ pip install -r requirements.txt
-```
-Using conda:
-```
-conda env create --file=environment.yml
-```
-
-## Reproduce results
-![](./figures/methods.svg)
-
-* **Data**: Harmonized European buidling data used from https://eubucco.com/data [1].
-* **Features engineering**: Urban form features crafted with [eubucco](https://github.com/ai4up/eubucco/blob/a9096afa20dc422c9063c742d66f802772ab7159/eubucco/ft_eng/ft_eng.py).
-* **Experiments**: All experiments conducted to answer the research questions are defined in [bin/experiments.py](bin/experiments.py).
-* **Deployment**: A Slurm cluster was utilized for model training. Submit a Slurm job to reproduce the experiments using:
-    * `sbatch bin/slurm-submit/submit-prepare.sh` to prepare the data
-    * `sbatch bin/slurm-submit/submit-preliminary.sh` for all preliminary experiments
-    * `sbatch bin/slurm-submit/submit-exp.sh` for all main experiments
-* **Figures**: All figures and tables have been created with [notebooks/v0_1_prediction.ipynb](notebooks/v0_1_prediction.ipynb) (partially outdated).
-
-
-[1] Milojevic-Dupont, Nikola, and Wagner, Felix, Hu, Jiawei, Zumwald, Marius, Nachtigall, Florian, Biljecki, Filip, Heeren, Niko, Kaack, Lynn, Pichler, Peter-Paul, & Creutzig, Felix. (2022). EUBUCCO (v0.1). Zenodo. https://doi.org/10.5281/zenodo.6524781
+## Features
+- **Data Integration**: Combines diverse datasets to create a comprehensive prediction model.
+- **Machine Learning Models**: Implements various ML algorithms to explore and predict building ages.
+- **Visualization**: Offers graphical insights into the data and model performance.
 
 ## Abstract
 
-> To stay within 1.5°C of global warming, reducing energy-related emissions in the building sector is essential. Rather than generic climate recommendations, this requires tailored, low-carbon urban planning solutions and spatially explicit methods that can inform policy measures at urban, street and building scale.
->
-> Here, we propose a scalable method that is able to predict building age information in different countries using only open urban morphology data. 
->
-> We find that spatially cross-validated regression models are sufficiently robust to generalize and predict building age in unseen cities with a mean absolute error (MAE) between 15.3 years (Netherlands) and 19.9 years (Spain).  Our experiments show that large-scale models improve generalization for predicting across cities, but are not needed to infer missing data within known cities.
->
-> We further find that classification outperforms regression for use cases where only the construction period is of interest such as energy modeling.
-> Overall, our results demonstrate the feasibility of generating missing age data in different contexts across Europe, providing important initial results for large-scale data generation projects such as EUBUCCO. We also highlight challenges posed by data inconsistencies and urban form differences between countries that need to be addressed for an actual roll-out of such methods.
+> This paper predicts building ages across the Netherlands, Spain, and France by combining commercial building data, open-source 2D urban morphology data, and street view images. This integration marks the first use of these heterogeneous data sources for cross-country age prediction, addressing previously identified research gaps by quantifying the standalone and combined value of each data source in predicting building age. Furthermore, the study documents a novel application of open-source street view images at a larger scale, expanding the geographical scope of street view image use in scientific research beyond regional study cases.
+> 
+> The study demonstrates that deep learning and machine learning models together can effectively estimate building age across national borders, leveraging on the unique information advantages of each data source. However, the use of open-source street view images used in this study requires significant preprocessing to be effective, and the integration of heterogeneous data types (image and tabular) presents challenges.
+> 
+> From a policy side, this study broadens the availability of scalable, cost-effective building data, supporting urban planning and risk management efforts to adapt European infrastructures to climate change. The research emphasizes the significance of building age data in determining energy efficiency and shaping retrofitting strategies across Europe. Additionally, this data can help to evaluate the European financial system’s transition risks associated with environmental non-compliance and assist in estimating physical risks posed by natural hazards.
+
 
 ## Contact
-For any questions, please contact info@eubucco.com.
+For any questions, please contact k.foerster@students.hertie-school.org
