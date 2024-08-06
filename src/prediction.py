@@ -113,7 +113,7 @@ class Predictor:
 
     def _clean(self):
         self.df.dropna(subset=[self.target_attribute], inplace=True)
-        self.df.drop_duplicates(subset=['id'], inplace=True)
+        self.df.drop_duplicates(subset=['PropertyKey_ID'], inplace=True)
         logger.info(f'Dataset length: {len(self.df)}')
         logger.info(f'Dataset allocated memory: {int(self.df.memory_usage(index=True).sum() / 1024 / 1024)} MB')
 
@@ -154,8 +154,8 @@ class Predictor:
         self.df_train = sklearn.utils.shuffle(self.df_train, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
         self.df_test = sklearn.utils.shuffle(self.df_test, random_state=dataset.GLOBAL_REPRODUCIBILITY_SEED)
 
-        self.df_train = self.df_train.set_index('id', drop=False)
-        self.df_test = self.df_test.set_index('id', drop=False)
+        self.df_train = self.df_train.set_index('PropertyKey_ID', drop=False)
+        self.df_test = self.df_test.set_index('PropertyKey_ID', drop=False)
 
         feature_cols = list(self.df_test.columns.intersection(dataset.FEATURES))
 
@@ -167,6 +167,7 @@ class Predictor:
 
         self.X_test = self.df_test[feature_cols]
         self.y_test = self.df_test[[self.target_attribute]]
+
 
 
     def _train(self):

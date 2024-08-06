@@ -4,9 +4,9 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = 'workspace/ufo-prediction/main notebooks'
+DATA_DIR = 'ufo-prediction/main notebooks'
 # DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
-METADATA_DIR = 'workspace/ufo-prediction/metadata'
+METADATA_DIR = 'ufo-prediction/metadata'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
 # METADATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'metadata'))
 

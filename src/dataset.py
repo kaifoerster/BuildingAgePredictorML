@@ -4,8 +4,8 @@ import numpy as np
 
 GLOBAL_REPRODUCIBILITY_SEED = 1
 
-DATA_DIR = 'workspace/ufo-prediction/main notebooks'
-METADATA_DIR = 'workspace/ufo-prediction/metadata'
+DATA_DIR = 'ufo-prediction/main notebooks'
+METADATA_DIR = 'ufo-prediction/metadata'
 #DATA_DIR = '/p/projects/eubucco/data/2-database-city-level-v0_1'
 #METADATA_DIR = '/p/projects/eubucco/data/3-ml-inputs'
 # DATA_DIR = os.path.realpath(os.path.join(__file__, '..', '..', 'data', 'geometry'))
@@ -354,7 +354,7 @@ RCA_FEATURES_SUBCAT = [
     "Tenancy_tx"
 ]
 
-RCA_FEATURES_EXTRA = ['Unnamed: 0', 'Status_dt', 'Deal_Update_dt', 'Property_Update_dt', 'MaxChanged_dt', 'age_bracket', 'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'geometry', 'index_right0', 'index_right1']
+RCA_FEATURES_EXTRA = ['Unnamed: 0', 'Status_dt', 'Deal_Update_dt', 'Property_Update_dt', 'MaxChanged_dt', 'age_bracket', 'YearBlt_new', 'age_left', 'YearBlt', 'YearBlt_new2', 'age2', 'YearBlt2', 'geometry']
 
 
 TARGET_ATTRIBUTES = [AGE_ATTRIBUTE, TYPE_ATTRIBUTE, HEIGHT_ATTRIBUTE, 'floors']

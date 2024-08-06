@@ -395,6 +395,36 @@ def categorical_to_int(df, var, labels=None):
     df[var] = df[var].cat.codes
     return df
 
+def categorical_to_int_byList(df, vars_list, labels_dict=None):
+    for var in vars_list:
+        # Create a new column with '_label' suffix to store the original categorical data
+        df[var + '_label'] = df[var]
+        
+        # Convert the variable to 'category' type
+        df[var] = df[var].astype('category')
+
+        # If a specific set of labels is provided for the variable, apply them
+        if labels_dict and var in labels_dict:
+            df[var] = df[var].cat.remove_unused_categories()
+            df[var] = df[var].cat.reorder_categories(labels_dict[var])
+
+        # Convert categories to codes
+        df[var] = df[var].cat.codes
+    
+    return df
+
+def convert_to_int_byList(df, vars_list):
+    for var in vars_list:
+        # Safely convert the variable to integers, using NaN for missing values
+        df[var] = pd.to_numeric(df[var], errors='coerce').fillna(0).astype(int)
+    return df
+
+def convert_to_double_byList(df, vars_list):
+    for var in vars_list:
+        # Safely convert the variable to doubles (floats), using NaN for missing values
+        df[var] = pd.to_numeric(df[var], errors='coerce')
+    return df
+
 
 def categorize_age(df, bins, metric_col=None, remove_outliers=True):
     if metric_col:
